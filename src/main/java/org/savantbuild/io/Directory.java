@@ -23,15 +23,15 @@ import java.nio.file.attribute.FileTime;
  * @author Brian Pontarelli
  */
 public class Directory implements Comparable<Directory> {
-  public String name;
-
   public String groupName;
+
+  public FileTime lastModifiedTime;
 
   public Integer mode;
 
-  public String userName;
+  public String name;
 
-  public FileTime lastModifiedTime;
+  public String userName;
 
   public Directory(String name, Integer mode, String userName, String groupName, FileTime lastModifiedTime) {
     this.name = name;
@@ -58,5 +58,60 @@ public class Directory implements Comparable<Directory> {
   @Override
   public int hashCode() {
     return name.hashCode();
+  }
+
+  /**
+   * Sets the groupName.
+   *
+   * @param groupName The groupName
+   * @return This.
+   */
+  public Directory withGroupName(String groupName) {
+    this.groupName = groupName;
+    return this;
+  }
+
+  /**
+   * Sets the lastModifiedTime.
+   *
+   * @param lastModifiedTime The lastModifiedTime
+   * @return This.
+   */
+  public Directory withLastModifiedTime(FileTime lastModifiedTime) {
+    this.lastModifiedTime = lastModifiedTime;
+    return this;
+  }
+
+  /**
+   * Sets the mode.
+   *
+   * @param mode The mode
+   * @return This.
+   */
+  public Directory withMode(Integer mode) {
+    this.mode = mode;
+    return this;
+  }
+
+  /**
+   * Sets the name.
+   *
+   * @param name The name.
+   * @return This.
+   */
+  public Directory withName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  /**
+   * Sets the userName.
+   *
+   * @param userName The userName
+   * @return This.
+   */
+  public Directory withUserName(String userName) {
+    this.userName = userName;
+    return this;
   }
 }

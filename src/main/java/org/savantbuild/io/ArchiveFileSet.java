@@ -48,6 +48,15 @@ public class ArchiveFileSet extends FileSet {
   public String userName;
 
   /**
+   * Constructs a new ArchiveFileSet.
+   *
+   * @param directory The directory of the FileSet.
+   */
+  public ArchiveFileSet(Path directory) {
+    super(directory);
+  }
+
+  /**
    * Constructs a new ArchiveFileSet. The directory is required but the prefix is optional. Leaving the prefix blank
    * will cause all of the files in the FileSet to contain relative paths based on the FileSet's directory. Using the
    * prefix will cause the files in the FileSet to be relative to the prefix plus the directory.
@@ -89,25 +98,6 @@ public class ArchiveFileSet extends FileSet {
     this.dirMode = dirMode;
   }
 
-  @Override
-  public List<FileInfo> toFileInfos() throws IOException {
-    List<FileInfo> infos = super.toFileInfos();
-    if (prefix != null) {
-      infos.forEach((info) -> info.relative = Paths.get(prefix, info.relative.toString()));
-    }
-    if (mode != null) {
-      infos.forEach((info) -> info.permissions = FileTools.toPosixPermissions(FileTools.toMode(mode)));
-    }
-    if (userName != null) {
-      infos.forEach((info) -> info.userName = userName);
-    }
-    if (groupName != null) {
-      infos.forEach((info) -> info.groupName = groupName);
-    }
-
-    return infos;
-  }
-
   /**
    * Overrides the parent method, but uses the {@link #dirGroupName}, {@link #dirUserName} and {@link #dirMode}
    * variables to set the mode, userName and groupName inside the returned Directory objects.
@@ -135,5 +125,101 @@ public class ArchiveFileSet extends FileSet {
     }
 
     return directories;
+  }
+
+  @Override
+  public List<FileInfo> toFileInfos() throws IOException {
+    List<FileInfo> infos = super.toFileInfos();
+    if (prefix != null) {
+      infos.forEach((info) -> info.relative = Paths.get(prefix, info.relative.toString()));
+    }
+    if (mode != null) {
+      infos.forEach((info) -> info.permissions = FileTools.toPosixPermissions(FileTools.toMode(mode)));
+    }
+    if (userName != null) {
+      infos.forEach((info) -> info.userName = userName);
+    }
+    if (groupName != null) {
+      infos.forEach((info) -> info.groupName = groupName);
+    }
+
+    return infos;
+  }
+
+  /**
+   * Sets the dirGroupName.
+   *
+   * @param dirGroupName The dirGroupName.
+   * @return This.
+   */
+  public ArchiveFileSet withDiGroupName(String dirGroupName) {
+    this.dirGroupName = dirGroupName;
+    return this;
+  }
+
+  /**
+   * Sets the dirMode.
+   *
+   * @param dirMode The dirMode.
+   * @return This.
+   */
+  public ArchiveFileSet withDirMode(Integer dirMode) {
+    this.dirMode = dirMode;
+    return this;
+  }
+
+  /**
+   * Sets the dirUserName.
+   *
+   * @param dirUserName The dirUserName.
+   * @return This.
+   */
+  public ArchiveFileSet withDirUserName(String dirUserName) {
+    this.dirUserName = dirUserName;
+    return this;
+  }
+
+  /**
+   * Sets the groupName.
+   *
+   * @param groupName The groupName.
+   * @return This.
+   */
+  public ArchiveFileSet withGroupName(String groupName) {
+    this.groupName = groupName;
+    return this;
+  }
+
+  /**
+   * Sets the mode.
+   *
+   * @param mode The mode.
+   * @return This.
+   */
+  public ArchiveFileSet withMode(Integer mode) {
+    this.mode = mode;
+    return this;
+  }
+
+  /**
+   * Sets the prefix.
+   *
+   * @param prefix The prefix.
+   * @return This.
+   */
+  public ArchiveFileSet withPrefix(String prefix) {
+    this.prefix = prefix;
+    return this;
+  }
+
+  /**
+   * Sets the userName.
+   *
+   * @param userName The userName.
+   * @return This.
+   */
+  public ArchiveFileSet withUserName(String userName) {
+    this.userName = userName;
+    return this;
   }
 }

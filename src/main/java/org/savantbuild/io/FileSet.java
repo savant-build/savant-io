@@ -42,14 +42,14 @@ import java.util.stream.Collectors;
 public class FileSet {
   public final Path directory;
 
-  public final Set<Pattern> includePatterns = new HashSet<>();
-
   public final Set<Pattern> excludePatterns = new HashSet<>();
+
+  public final Set<Pattern> includePatterns = new HashSet<>();
 
   /**
    * Constructs a new FileSet.
    *
-   * @param directory       The directory of the FileSet.
+   * @param directory The directory of the FileSet.
    */
   public FileSet(Path directory) {
     this(directory, null, null);
@@ -126,6 +126,30 @@ public class FileSet {
     });
 
     return results.stream().filter(this::includeFileInfo).collect(Collectors.toList());
+  }
+
+  /**
+   * Sets the excludePatterns.
+   *
+   * @param excludePatterns The excludePatterns.
+   * @return This.
+   */
+  public FileSet withExcludePatterns(List<Pattern> excludePatterns) {
+    this.excludePatterns.clear();
+    this.excludePatterns.addAll(excludePatterns);
+    return this;
+  }
+
+  /**
+   * Sets the includePatterns.
+   *
+   * @param includePatterns The includePatterns.
+   * @return This.
+   */
+  public FileSet withIncludePatterns(List<Pattern> includePatterns) {
+    this.includePatterns.clear();
+    this.includePatterns.addAll(includePatterns);
+    return this;
   }
 
   private boolean includeFileInfo(FileInfo fileInfo) {
