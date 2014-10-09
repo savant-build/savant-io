@@ -1,0 +1,2 @@
+This file contains %TOKEN1% and %TOKEN2%
+It should be replaced with %TOKEN3% and %TOKEN4%
