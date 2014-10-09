@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -70,6 +71,19 @@ public class FileSet {
     if (excludePatterns != null) {
       this.excludePatterns.addAll(excludePatterns);
     }
+  }
+
+  /**
+   * Constructs a FileSet from a Map of attributes.
+   *
+   * @param attributes The attributes.
+   * @return The FileSet.
+   */
+  public static FileSet fromAttributes(Map<String, Object> attributes) {
+    Path dir = FileTools.toPath(attributes.get("dir"));
+    return new FileSet(dir)
+        .withExcludePatterns(Tools.toPatterns((List) attributes.get("excludePatterns")))
+        .withIncludePatterns(Tools.toPatterns((List) attributes.get("includePatterns")));
   }
 
   /**
@@ -136,7 +150,9 @@ public class FileSet {
    */
   public FileSet withExcludePatterns(List<Pattern> excludePatterns) {
     this.excludePatterns.clear();
-    this.excludePatterns.addAll(excludePatterns);
+    if (excludePatterns != null) {
+      this.excludePatterns.addAll(excludePatterns);
+    }
     return this;
   }
 
@@ -148,7 +164,9 @@ public class FileSet {
    */
   public FileSet withIncludePatterns(List<Pattern> includePatterns) {
     this.includePatterns.clear();
-    this.includePatterns.addAll(includePatterns);
+    if (includePatterns != null) {
+      this.includePatterns.addAll(includePatterns);
+    }
     return this;
   }
 

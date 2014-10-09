@@ -113,7 +113,7 @@ public class ZipBuilderTest extends BaseUnitTest {
     assertZipContainsDirectory(file, "org/savantbuild/io/jar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/tar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/zip/", 0x755);
-    assertEquals(count, 32);
+    assertEquals(count, 33);
   }
 
   @Test
@@ -153,7 +153,7 @@ public class ZipBuilderTest extends BaseUnitTest {
     assertZipContainsDirectory(file, "org/savantbuild/io/jar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/tar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/zip/", 0x755);
-    assertEquals(count, 31);
+    assertEquals(count, 32);
   }
 
   @Test

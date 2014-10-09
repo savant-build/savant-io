@@ -16,6 +16,7 @@
 package org.savantbuild.io;
 
 import java.nio.file.attribute.FileTime;
+import java.util.Map;
 
 /**
  * A directory that might be empty or might contain other directories or files.
@@ -33,12 +34,30 @@ public class Directory implements Comparable<Directory> {
 
   public String userName;
 
+  public Directory(String name) {
+    this.name = name;
+  }
+
   public Directory(String name, Integer mode, String userName, String groupName, FileTime lastModifiedTime) {
     this.name = name;
     this.groupName = groupName;
     this.mode = mode;
     this.userName = userName;
     this.lastModifiedTime = lastModifiedTime;
+  }
+
+  /**
+   * Constructs a Directory from a Map of attributes.
+   *
+   * @param attributes The attributes.
+   * @return The Directory.
+   */
+  public static Directory fromAttributes(Map<String, Object> attributes) {
+    return new Directory(Tools.toString(attributes.get("name")))
+        .withGroupName(Tools.toString(attributes.get("groupName")))
+        .withLastModifiedTime((FileTime) attributes.get("lastModifiedTime"))
+        .withMode((Integer) attributes.get("mode"))
+        .withUserName(Tools.toString(attributes.get("userName")));
   }
 
   @Override

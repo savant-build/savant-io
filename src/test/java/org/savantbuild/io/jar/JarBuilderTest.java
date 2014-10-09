@@ -101,7 +101,7 @@ public class JarBuilderTest extends BaseUnitTest {
     assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
     assertJarContainsDirectories(file, "test/directory/", "org/", "org/savantbuild/", "org/savantbuild/io/",
         "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
-    assertEquals(count, 32);
+    assertEquals(count, 33);
   }
 
   @Test
@@ -137,6 +137,6 @@ public class JarBuilderTest extends BaseUnitTest {
     assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
     assertJarContainsDirectories(file, "org/", "org/savantbuild/", "org/savantbuild/io/",
         "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
-    assertEquals(count, 31);
+    assertEquals(count, 32);
   }
 }

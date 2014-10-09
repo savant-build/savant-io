@@ -23,6 +23,7 @@ import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -99,6 +100,26 @@ public class ArchiveFileSet extends FileSet {
   }
 
   /**
+   * Constructs an ArchiveFileSet from a Map of attributes.
+   *
+   * @param attributes The attributes.
+   * @return The ArchiveFileSet.
+   */
+  public static ArchiveFileSet fromAttributes(Map<String, Object> attributes) {
+    Path dir = FileTools.toPath(attributes.get("dir"));
+    return (ArchiveFileSet) new ArchiveFileSet(dir)
+        .withDirGroupName(Tools.toString(attributes.get("dirGroupName")))
+        .withDirMode((Integer) attributes.get("dirMode"))
+        .withDirUserName(Tools.toString(attributes.get("dirUserName")))
+        .withGroupName(Tools.toString(attributes.get("groupName")))
+        .withMode((Integer) attributes.get("mode"))
+        .withPrefix(Tools.toString(attributes.get("prefix")))
+        .withUserName(Tools.toString(attributes.get("userName")))
+        .withExcludePatterns(Tools.toPatterns((List) attributes.get("excludePatterns")))
+        .withIncludePatterns(Tools.toPatterns((List) attributes.get("includePatterns")));
+  }
+
+  /**
    * Overrides the parent method, but uses the {@link #dirGroupName}, {@link #dirUserName} and {@link #dirMode}
    * variables to set the mode, userName and groupName inside the returned Directory objects.
    *
@@ -152,7 +173,7 @@ public class ArchiveFileSet extends FileSet {
    * @param dirGroupName The dirGroupName.
    * @return This.
    */
-  public ArchiveFileSet withDiGroupName(String dirGroupName) {
+  public ArchiveFileSet withDirGroupName(String dirGroupName) {
     this.dirGroupName = dirGroupName;
     return this;
   }

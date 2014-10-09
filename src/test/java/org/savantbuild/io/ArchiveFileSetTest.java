@@ -47,6 +47,7 @@ public class ArchiveFileSetTest extends BaseUnitTest {
         projectDir.resolve("src/main/java/org/savantbuild/io/jar/JarTools.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/tar/TarBuilder.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/tar/TarTools.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/Tools.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/zip/ZipBuilder.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/zip/ZipTools.java")
     ));
@@ -62,6 +63,7 @@ public class ArchiveFileSetTest extends BaseUnitTest {
         Paths.get("org/savantbuild/io/jar/JarTools.java"),
         Paths.get("org/savantbuild/io/tar/TarBuilder.java"),
         Paths.get("org/savantbuild/io/tar/TarTools.java"),
+        Paths.get("org/savantbuild/io/Tools.java"),
         Paths.get("org/savantbuild/io/zip/ZipBuilder.java"),
         Paths.get("org/savantbuild/io/zip/ZipTools.java")
     ));
@@ -83,6 +85,7 @@ public class ArchiveFileSetTest extends BaseUnitTest {
         projectDir.resolve("src/main/java/org/savantbuild/io/jar/JarTools.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/tar/TarBuilder.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/tar/TarTools.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/Tools.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/zip/ZipBuilder.java"),
         projectDir.resolve("src/main/java/org/savantbuild/io/zip/ZipTools.java")
     ));
@@ -98,6 +101,7 @@ public class ArchiveFileSetTest extends BaseUnitTest {
         Paths.get("some-directory-1.0/org/savantbuild/io/jar/JarTools.java"),
         Paths.get("some-directory-1.0/org/savantbuild/io/tar/TarBuilder.java"),
         Paths.get("some-directory-1.0/org/savantbuild/io/tar/TarTools.java"),
+        Paths.get("some-directory-1.0/org/savantbuild/io/Tools.java"),
         Paths.get("some-directory-1.0/org/savantbuild/io/zip/ZipBuilder.java"),
         Paths.get("some-directory-1.0/org/savantbuild/io/zip/ZipTools.java")
     ));
