@@ -17,7 +17,9 @@ package org.savantbuild.io;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.testng.annotations.Test;
@@ -105,5 +107,57 @@ public class ArchiveFileSetTest extends BaseUnitTest {
         Paths.get("some-directory-1.0/org/savantbuild/io/zip/ZipBuilder.java"),
         Paths.get("some-directory-1.0/org/savantbuild/io/zip/ZipTools.java")
     ));
+  }
+
+  @Test
+  public void toFileInfosWithDeepPrefix() throws Exception {
+    ArchiveFileSet fileSet = new ArchiveFileSet(projectDir.resolve("src/main/java"), "usr/local/inversoft/main");
+    List<FileInfo> infos = fileSet.toFileInfos();
+    assertEquals(infos.stream().map((info) -> info.origin).collect(Collectors.toList()), Arrays.asList(
+        projectDir.resolve("src/main/java/org/savantbuild/io/ArchiveFileSet.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/Directory.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/FileInfo.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/FileSet.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/FileTools.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/Filter.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/jar/JarBuilder.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/jar/JarTools.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/tar/TarBuilder.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/tar/TarTools.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/Tools.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/zip/ZipBuilder.java"),
+        projectDir.resolve("src/main/java/org/savantbuild/io/zip/ZipTools.java")
+    ));
+    assertEquals(infos.stream().map((info) -> info.relative).collect(Collectors.toList()), asList(
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/ArchiveFileSet.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/Copier.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/Directory.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/FileInfo.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/FileSet.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/FileTools.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/Filter.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/jar/JarBuilder.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/jar/JarTools.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/tar/TarBuilder.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/tar/TarTools.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/Tools.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/zip/ZipBuilder.java"),
+        Paths.get("usr/local/inversoft/main/org/savantbuild/io/zip/ZipTools.java")
+    ));
+
+    Set<Directory> directories = fileSet.toDirectories();
+    assertEquals(directories, new HashSet<>(asList(
+        new Directory("usr"),
+        new Directory("usr/local"),
+        new Directory("usr/local/inversoft"),
+        new Directory("usr/local/inversoft/main"),
+        new Directory("usr/local/inversoft/main/org"),
+        new Directory("usr/local/inversoft/main/org/savantbuild"),
+        new Directory("usr/local/inversoft/main/org/savantbuild/io"),
+        new Directory("usr/local/inversoft/main/org/savantbuild/io/jar"),
+        new Directory("usr/local/inversoft/main/org/savantbuild/io/tar"),
+        new Directory("usr/local/inversoft/main/org/savantbuild/io/zip")
+    )));
   }
 }

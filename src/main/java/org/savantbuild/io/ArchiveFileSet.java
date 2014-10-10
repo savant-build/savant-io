@@ -22,11 +22,16 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 /**
  * A FileSet for archives. This allows the files in the FileSet to optionally contain a prefix.
@@ -34,6 +39,10 @@ import java.util.regex.Pattern;
  * @author Brian Pontarelli
  */
 public class ArchiveFileSet extends FileSet {
+  public static final Set<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(asList("dir")));
+
+  public static final Set<String> VALID_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(asList("dir", "dirGroupName", "dirMode", "dirUserName", "groupName", "mode", "prefix", "userName", "includePatterns", "excludePatterns")));
+
   public String dirGroupName;
 
   public Integer dirMode;
@@ -100,13 +109,53 @@ public class ArchiveFileSet extends FileSet {
   }
 
   /**
+   * Determines if the attributes given can be used to construct an ArchiveFileSet.
+   *
+   * @param attributes The attributes.
+   * @return Null if the attributes are valid, an error message describing why they aren't valid.
+   */
+  public static String attributesValid(Map<String, Object> attributes) {
+    StringBuilder build = new StringBuilder();
+    if (!attributes.keySet().containsAll(REQUIRED_ATTRIBUTES)) {
+      build.append("Missing required attributes ").append(REQUIRED_ATTRIBUTES).append(" for an ArchiveFileSet\n");
+    }
+
+    Set<String> invalidAttributes = attributes.keySet().stream().filter((attr) -> !VALID_ATTRIBUTES.contains(attr)).collect(Collectors.toSet());
+    if (invalidAttributes.size() > 0) {
+      build.append("Invalid attributes ").append(invalidAttributes).append(" for an ArchiveFileSet\n");
+    }
+
+    if (attributes.containsKey("includePatterns") && !(attributes.get("includePatterns") instanceof Collection)) {
+      build.append("The [includePatterns] attribute for an ArchiveFileSet must be a Collection of some kind");
+    }
+
+    if (attributes.containsKey("excludePatterns") && !(attributes.get("excludePatterns") instanceof Collection)) {
+      build.append("The [excludePatterns] attribute for an ArchiveFileSet must be a Collection of some kind");
+    }
+
+    if (attributes.containsKey("mode") && !(attributes.get("mode") instanceof Integer)) {
+      build.append("The [mode] attribute for an ArchiveFileSet must be an Integer");
+    }
+
+    if (attributes.containsKey("dirMode") && !(attributes.get("dirMode") instanceof Integer)) {
+      build.append("The [dirMode] attribute for an ArchiveFileSet must be an Integer");
+    }
+
+    if (build.length() > 0) {
+      return build.toString();
+    }
+
+    return null;
+  }
+
+  /**
    * Constructs an ArchiveFileSet from a Map of attributes.
    *
+   * @param dir        The directory for the ArchiveFileSet.
    * @param attributes The attributes.
    * @return The ArchiveFileSet.
    */
-  public static ArchiveFileSet fromAttributes(Map<String, Object> attributes) {
-    Path dir = FileTools.toPath(attributes.get("dir"));
+  public static ArchiveFileSet fromAttributes(Path dir, Map<String, Object> attributes) {
     return (ArchiveFileSet) new ArchiveFileSet(dir)
         .withDirGroupName(Tools.toString(attributes.get("dirGroupName")))
         .withDirMode((Integer) attributes.get("dirMode"))
@@ -128,11 +177,11 @@ public class ArchiveFileSet extends FileSet {
    */
   @Override
   public Set<Directory> toDirectories() throws IOException {
-    List<FileInfo> infos = super.toFileInfos();
+    List<FileInfo> infos = toFileInfos();
     Set<Directory> directories = new TreeSet<>();
     for (FileInfo info : infos) {
       Path relativeDir = info.relative.getParent();
-      Path originDir = info.origin.getParent();
+      Path originDir = info.origin.getParent() != null ? info.origin.getParent() : info.origin;
       while (relativeDir != null) {
         Integer mode = dirMode != null ? dirMode : FileTools.toHexMode(Files.getPosixFilePermissions(originDir));
         String userName = dirUserName != null ? dirUserName : Files.getOwner(originDir).getName();
@@ -141,7 +190,7 @@ public class ArchiveFileSet extends FileSet {
         directories.add(new Directory(relativeDir.toString(), mode, userName, groupName, lastModifiedTime));
 
         relativeDir = relativeDir.getParent();
-        originDir = originDir.getParent();
+        originDir = originDir.getParent() != null ? originDir.getParent() : originDir;
       }
     }
 

@@ -16,7 +16,13 @@
 package org.savantbuild.io;
 
 import java.nio.file.attribute.FileTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 /**
  * A directory that might be empty or might contain other directories or files.
@@ -24,6 +30,10 @@ import java.util.Map;
  * @author Brian Pontarelli
  */
 public class Directory implements Comparable<Directory> {
+  public static final Set<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(asList("name")));
+
+  public static final Set<String> VALID_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(asList("name", "groupName", "mode", "userName")));
+
   public String groupName;
 
   public FileTime lastModifiedTime;
@@ -44,6 +54,34 @@ public class Directory implements Comparable<Directory> {
     this.mode = mode;
     this.userName = userName;
     this.lastModifiedTime = lastModifiedTime;
+  }
+
+  /**
+   * Determines if the attributes given can be used to construct a Directory.
+   *
+   * @param attributes The attributes.
+   * @return Null if the attributes are valid, an error message describing why they aren't valid.
+   */
+  public static String attributesValid(Map<String, Object> attributes) {
+    StringBuilder build = new StringBuilder();
+    if (!attributes.keySet().containsAll(REQUIRED_ATTRIBUTES)) {
+      build.append("Missing required attributes ").append(REQUIRED_ATTRIBUTES).append(" for a Directory\n");
+    }
+
+    Set<String> invalidAttributes = attributes.keySet().stream().filter((attr) -> !VALID_ATTRIBUTES.contains(attr)).collect(Collectors.toSet());
+    if (invalidAttributes.size() > 0) {
+      build.append("Invalid attributes ").append(invalidAttributes).append(" for a Directory\n");
+    }
+
+    if (attributes.containsKey("mode") && !(attributes.get("mode") instanceof Integer)) {
+      build.append("The [mode] attribute for an ArchiveFileSet must be an Integer");
+    }
+
+    if (build.length() > 0) {
+      return build.toString();
+    }
+
+    return null;
   }
 
   /**
@@ -77,6 +115,10 @@ public class Directory implements Comparable<Directory> {
   @Override
   public int hashCode() {
     return name.hashCode();
+  }
+
+  public String toString() {
+    return name;
   }
 
   /**

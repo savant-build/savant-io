@@ -25,6 +25,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.savantbuild.io.ArchiveFileSet;
 import org.savantbuild.io.BaseUnitTest;
 import org.savantbuild.io.Directory;
 import org.savantbuild.io.FileSet;
@@ -121,6 +122,33 @@ public class TarBuilderTest extends BaseUnitTest {
     assertTarContainsDirectory(file, "org/savantbuild/io/", null, null, null);
     assertTarContainsDirectory(file, "test/directory/", 0x755, "root", "root");
     assertEquals(count, 33);
+  }
+
+  @Test
+  public void buildArchiveFileSets() throws Exception {
+    FileTools.prune(projectDir.resolve("build/test/tars"));
+
+    Path file = projectDir.resolve("build/test/tars/test.tar");
+    TarBuilder builder = new TarBuilder(file);
+    builder.storeGroupName = true;
+    builder.storeUserName = true;
+    int count = builder.fileSet(new ArchiveFileSet(projectDir.resolve("src/main/java"), "usr/local/main"))
+                       .fileSet(new ArchiveFileSet(projectDir.resolve("src/test/java"), "usr/local/test"))
+                       .optionalFileSet(new FileSet(projectDir.resolve("doesNotExist")))
+                       .directory(new Directory("test/directory", 0x755, "root", "root", null))
+                       .build();
+    assertTrue(Files.isReadable(file));
+    assertTarFileEquals(file, "usr/local/main/org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
+    assertTarFileEquals(file, "usr/local/main/org/savantbuild/io/FileSet.java", projectDir.resolve("src/main/java/org/savantbuild/io/FileSet.java"));
+    assertTarFileEquals(file, "usr/local/test/org/savantbuild/io/FileSetTest.java", projectDir.resolve("src/test/java/org/savantbuild/io/FileSetTest.java"));
+    assertTarContainsDirectory(file, "usr/local/main/org/", null, null, null);
+    assertTarContainsDirectory(file, "usr/local/test/org/", null, null, null);
+    assertTarContainsDirectory(file, "usr/local/main/org/savantbuild/", null, null, null);
+    assertTarContainsDirectory(file, "usr/local/test/org/savantbuild/", null, null, null);
+    assertTarContainsDirectory(file, "usr/local/main/org/savantbuild/io/", null, null, null);
+    assertTarContainsDirectory(file, "usr/local/test/org/savantbuild/io/", null, null, null);
+    assertTarContainsDirectory(file, "test/directory/", 0x755, "root", "root");
+    assertEquals(count, 43);
   }
 
   @Test

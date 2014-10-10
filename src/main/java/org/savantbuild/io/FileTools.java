@@ -142,6 +142,53 @@ public class FileTools {
   }
 
   /**
+   * Converts the file permissions to a hex permission value.
+   *
+   * @param permissions The set of POSIX file permissions.
+   * @return The hex value.
+   */
+  public static Integer toHexMode(Set<PosixFilePermission> permissions) {
+    if (permissions == null || permissions.isEmpty()) {
+      return 0x644;
+    }
+
+    int mode = 0x000;
+    for (PosixFilePermission permission : permissions) {
+      switch (permission) {
+        case GROUP_EXECUTE:
+          mode |= 0x010;
+          break;
+        case GROUP_READ:
+          mode |= 0x040;
+          break;
+        case GROUP_WRITE:
+          mode |= 0x020;
+          break;
+        case OTHERS_EXECUTE:
+          mode |= 0x001;
+          break;
+        case OTHERS_READ:
+          mode |= 0x004;
+          break;
+        case OTHERS_WRITE:
+          mode |= 0x002;
+          break;
+        case OWNER_EXECUTE:
+          mode |= 0x100;
+          break;
+        case OWNER_READ:
+          mode |= 0x400;
+          break;
+        case OWNER_WRITE:
+          mode |= 0x200;
+          break;
+      }
+    }
+
+    return mode;
+  }
+
+  /**
    * Converts the file permissions of this FileInfo to a POSIX bit mapped mode. The bit map looks like this:
    * <p>
    * <pre>
@@ -213,6 +260,24 @@ public class FileTools {
   }
 
   /**
+   * Converts the object to a Path.
+   *
+   * @param object The object.
+   * @return The object as a path.
+   */
+  public static Path toPath(Object object) {
+    if (object == null) {
+      return null;
+    }
+
+    if (object instanceof Path) {
+      return (Path) object;
+    }
+
+    return Paths.get(object.toString());
+  }
+
+  /**
    * Converts the POSIX bit mapped file mode integer to a set of PosixFilePermissions. The bit map looks like this:
    * <p>
    * <pre>
@@ -262,24 +327,6 @@ public class FileTools {
   }
 
   /**
-   * Converts the object to a Path.
-   *
-   * @param object The object.
-   * @return The object as a path.
-   */
-  public static Path toPath(Object object) {
-    if (object == null) {
-      return null;
-    }
-
-    if (object instanceof Path) {
-      return (Path) object;
-    }
-
-    return Paths.get(object.toString());
-  }
-
-  /**
    * Updates the last modified timestamp of each of the given Paths. This effectively "touches" each Path.
    *
    * @param paths The Paths to touch.
@@ -305,52 +352,5 @@ public class FileTools {
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
-  }
-
-  /**
-   * Converts the file permissions to a hex permission value.
-   *
-   * @param permissions The set of POSIX file permissions.
-   * @return The hex value.
-   */
-  public static Integer toHexMode(Set<PosixFilePermission> permissions) {
-    if (permissions == null || permissions.isEmpty()) {
-      return 0x644;
-    }
-
-    int mode = 0x000;
-    for (PosixFilePermission permission : permissions) {
-      switch (permission) {
-        case GROUP_EXECUTE:
-          mode |= 0x010;
-          break;
-        case GROUP_READ:
-          mode |= 0x040;
-          break;
-        case GROUP_WRITE:
-          mode |= 0x020;
-          break;
-        case OTHERS_EXECUTE:
-          mode |= 0x001;
-          break;
-        case OTHERS_READ:
-          mode |= 0x004;
-          break;
-        case OTHERS_WRITE:
-          mode |= 0x002;
-          break;
-        case OWNER_EXECUTE:
-          mode |= 0x100;
-          break;
-        case OWNER_READ:
-          mode |= 0x400;
-          break;
-        case OWNER_WRITE:
-          mode |= 0x200;
-          break;
-      }
-    }
-
-    return mode;
   }
 }

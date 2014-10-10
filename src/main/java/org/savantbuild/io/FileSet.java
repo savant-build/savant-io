@@ -26,6 +26,7 @@ import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+
 /**
  * A FileSet represents a set of files within a directory. Currently, this only models all of the files contained in a
  * directory and all sub-directories below it.
@@ -41,6 +44,10 @@ import java.util.stream.Collectors;
  * @author Brian Pontarelli
  */
 public class FileSet {
+  public static final Set<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(asList("dir")));
+
+  public static final Set<String> VALID_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(asList("dir", "includePatterns", "excludePatterns")));
+
   public final Path directory;
 
   public final Set<Pattern> excludePatterns = new HashSet<>();
@@ -74,13 +81,45 @@ public class FileSet {
   }
 
   /**
+   * Determines if the attributes given can be used to construct a FileSet.
+   *
+   * @param attributes The attributes.
+   * @return Null if the attributes are valid, an error message describing why they aren't valid.
+   */
+  public static String attributesValid(Map<String, Object> attributes) {
+    StringBuilder build = new StringBuilder();
+    if (!attributes.keySet().containsAll(REQUIRED_ATTRIBUTES)) {
+      build.append("Missing required attributes ").append(REQUIRED_ATTRIBUTES).append(" for a FileSet\n");
+    }
+
+    Set<String> invalidAttributes = attributes.keySet().stream().filter((attr) -> !VALID_ATTRIBUTES.contains(attr)).collect(Collectors.toSet());
+    if (invalidAttributes.size() > 0) {
+      build.append("Invalid attributes ").append(invalidAttributes).append(" for a FileSet\n");
+    }
+
+    if (attributes.containsKey("includePatterns") && !(attributes.get("includePatterns") instanceof Collection)) {
+      build.append("The [includePatterns] attribute for a FileSet must be a Collection of some kind");
+    }
+
+    if (attributes.containsKey("excludePatterns") && !(attributes.get("excludePatterns") instanceof Collection)) {
+      build.append("The [excludePatterns] attribute for a FileSet must be a Collection of some kind");
+    }
+
+    if (build.length() > 0) {
+      return build.toString();
+    }
+
+    return null;
+  }
+
+  /**
    * Constructs a FileSet from a Map of attributes.
    *
+   * @param dir The directory for the FileSet.
    * @param attributes The attributes.
    * @return The FileSet.
    */
-  public static FileSet fromAttributes(Map<String, Object> attributes) {
-    Path dir = FileTools.toPath(attributes.get("dir"));
+  public static FileSet fromAttributes(Path dir, Map<String, Object> attributes) {
     return new FileSet(dir)
         .withExcludePatterns(Tools.toPatterns((List) attributes.get("excludePatterns")))
         .withIncludePatterns(Tools.toPatterns((List) attributes.get("includePatterns")));

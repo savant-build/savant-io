@@ -32,6 +32,10 @@ public class Tools {
    */
   @SuppressWarnings("unchecked")
   public static List<Pattern> toPatterns(List list) {
+    if (list == null) {
+      return null;
+    }
+
     for (int i = 0; i < list.size(); i++) {
       Object item = list.get(i);
       if (!(item instanceof Pattern)) {
