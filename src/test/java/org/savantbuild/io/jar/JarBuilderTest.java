@@ -99,7 +99,7 @@ public class JarBuilderTest extends BaseUnitTest {
     assertJarContains(new JarFile(file.toFile()), "org/savantbuild/io/Copier.java", "org/savantbuild/io/CopierTest.java",
         "org/savantbuild/io/FileSet.java", "org/savantbuild/io/FileTools.java");
     assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
-    assertJarContainsDirectories(file, "test/directory/", "org/", "org/savantbuild/", "org/savantbuild/io/",
+    assertJarContainsDirectories(file, "META-INF/", "test/directory/", "org/", "org/savantbuild/", "org/savantbuild/io/",
         "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
     assertEquals(count, 33);
   }
@@ -135,7 +135,7 @@ public class JarBuilderTest extends BaseUnitTest {
     assertJarContains(new JarFile(file.toFile()), "org/savantbuild/io/Copier.java", "org/savantbuild/io/CopierTest.java",
         "org/savantbuild/io/FileSet.java", "org/savantbuild/io/FileTools.java");
     assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
-    assertJarContainsDirectories(file, "org/", "org/savantbuild/", "org/savantbuild/io/",
+    assertJarContainsDirectories(file, "META-INF/", "org/", "org/savantbuild/", "org/savantbuild/io/",
         "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
     assertEquals(count, 32);
   }

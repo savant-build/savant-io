@@ -81,6 +81,9 @@ public class JarBuilder {
     int count = 0;
 
     try (JarOutputStream jos = new JarOutputStream(Files.newOutputStream(file), manifest)) {
+      // Ensure there is a META-INF directory because our JAR files always have a MANIFEST.MF file
+      jos.putNextEntry(new JarEntry("META-INF/"));
+
       for (Directory directory : directories) {
         String name = directory.name;
         JarEntry entry = new JarEntry(name.endsWith("/") ? name : name + "/");
