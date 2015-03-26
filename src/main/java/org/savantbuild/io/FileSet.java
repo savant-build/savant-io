@@ -178,7 +178,7 @@ public class FileSet {
       }
     });
 
-    return results.stream().filter(this::includeFileInfo).collect(Collectors.toList());
+    return results.stream().filter(this::includeFileInfo).sorted().collect(Collectors.toList());
   }
 
   /**
