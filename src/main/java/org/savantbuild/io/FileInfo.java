@@ -46,6 +46,11 @@ public class FileInfo implements Comparable<FileInfo> {
 
   public String userName;
 
+  public FileInfo(Path origin, Path relative) {
+    this.origin = origin;
+    this.relative = relative;
+  }
+
   @Override
   public int compareTo(FileInfo o) {
     return relative.compareTo(o.relative);
@@ -88,14 +93,10 @@ public class FileInfo implements Comparable<FileInfo> {
     return result;
   }
 
-  public FileInfo(Path origin, Path relative) {
-    this.origin = origin;
-    this.relative = relative;
-  }
-
   /**
-   * Converts the file permissions of this FileInfo to a POSIX bit mapped mode. The bit map looks like this:
    * <p>
+   * Converts the file permissions of this FileInfo to a POSIX bit mapped mode. The bit map looks like this:
+   * </p>
    * <pre>
    *   1_000_000_001_000_000
    * </pre>
@@ -103,6 +104,7 @@ public class FileInfo implements Comparable<FileInfo> {
    * The first bit is always set. The next three bits are the set UID bits, the next 3 bits are the set GID bits. The
    * next three bits are the owner permissions (read, write, execute), then the group permissions and finally the user
    * permissions.
+   * </p>
    *
    * @return The POSIX mode bit map as an integer.
    */

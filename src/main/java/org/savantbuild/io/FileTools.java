@@ -85,6 +85,9 @@ public class FileTools {
    *
    * @param sourceDir The source directory to walk.
    * @param outputDir The output directory to compare against.
+   * @param filter    A predicate that reduces the files that are compared. This should return true for files that are
+   *                  compared and false for those that aren't.
+   * @param mapper    A function that maps a source file to a target file.
    * @return The list of modified files.
    * @throws IllegalStateException If the code throws an IOException it is wrapped into an IllegalStateException.
    */
@@ -115,6 +118,8 @@ public class FileTools {
    * link, it is unlinked.
    *
    * @param path The path to delete.
+   * @throws IOException If the prune failed for any reason. This might indicate that the prune was only partially
+   * successful.
    */
   public static void prune(Path path) throws IOException {
     if (!Files.exists(path)) {
@@ -189,8 +194,9 @@ public class FileTools {
   }
 
   /**
-   * Converts the file permissions of this FileInfo to a POSIX bit mapped mode. The bit map looks like this:
    * <p>
+   * Converts the file permissions of this FileInfo to a POSIX bit mapped mode. The bit map looks like this:
+   * </p>
    * <pre>
    *   1_000_000_001_000_000
    * </pre>
@@ -198,6 +204,7 @@ public class FileTools {
    * The first bit is always set. The next three bits are the set UID bits, the next 3 bits are the set GID bits. The
    * next three bits are the owner permissions (read, write, execute), then the group permissions and finally the user
    * permissions.
+   * </p>
    *
    * @param permissions The POSIX file permissions.
    * @return The POSIX mode bit map as an integer.
@@ -278,8 +285,9 @@ public class FileTools {
   }
 
   /**
-   * Converts the POSIX bit mapped file mode integer to a set of PosixFilePermissions. The bit map looks like this:
    * <p>
+   * Converts the POSIX bit mapped file mode integer to a set of PosixFilePermissions. The bit map looks like this:
+   * </p>
    * <pre>
    *   1_000_000_001_000_000
    * </pre>
@@ -287,6 +295,7 @@ public class FileTools {
    * The first bit is always set. The next three bits are the set UID bits, the next 3 bits are the set GID bits. The
    * next three bits are the owner permissions (read, write, execute), then the group permissions and finally the user
    * permissions.
+   * </p>
    *
    * @param mode The POSIX bit mapped permissions.
    * @return The POSIX mode bit map as an integer.
