@@ -30,6 +30,7 @@ import java.util.jar.Attributes.Name;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipException;
 
 import org.savantbuild.io.Directory;
 import org.savantbuild.io.FileInfo;
@@ -82,14 +83,22 @@ public class JarBuilder {
 
     try (JarOutputStream jos = new JarOutputStream(Files.newOutputStream(file), manifest)) {
       // Ensure there is a META-INF directory because our JAR files always have a MANIFEST.MF file
-      jos.putNextEntry(new JarEntry("META-INF/"));
+      try {
+        jos.putNextEntry(new JarEntry("META-INF/"));
+      } catch (ZipException e) {
+        // Ignore, only care about file collisions.
+      }
 
       for (Directory directory : directories) {
-        String name = directory.name;
-        JarEntry entry = new JarEntry(name.endsWith("/") ? name : name + "/");
-        jos.putNextEntry(entry);
-        jos.closeEntry();
-        count++;
+        try {
+          String name = directory.name;
+          JarEntry entry = new JarEntry(name.endsWith("/") ? name : name + "/");
+          jos.putNextEntry(entry);
+          jos.closeEntry();
+          count++;
+        } catch (ZipException e) {
+          // Ignore, we only care about file collisions.
+        }
       }
 
       for (FileInfo fileInfo : fileInfos) {
