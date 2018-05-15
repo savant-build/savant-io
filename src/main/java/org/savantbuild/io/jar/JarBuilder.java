@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014-2018, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,14 +81,20 @@ public class JarBuilder {
 
     int count = 0;
 
-    try (JarOutputStream jos = new JarOutputStream(Files.newOutputStream(file), manifest)) {
-      // Ensure there is a META-INF directory because our JAR files always have a MANIFEST.MF file
-      jos.putNextEntry(new JarEntry("META-INF/"));
+    // Preemptively append a slash so the set will remove any duplicate directories, including META-INF/
+    for (Directory directory : directories) {
+      if (!directory.name.endsWith("/")) {
+        //noinspection StringConcatenationInLoop
+        directory.name = directory.name + "/";
+      }
+    }
 
-      for (Directory directory : directories) {
-        String name = directory.name;
-        JarEntry entry = new JarEntry(name.endsWith("/") ? name : name + "/");
-        jos.putNextEntry(entry);
+    // Ensure there is a META-INF directory because our JAR files always have a MANIFEST.MF file
+    directories.add(new Directory("META-INF/"));
+
+    try (JarOutputStream jos = new JarOutputStream(Files.newOutputStream(file), manifest)) {
+      for (Directory directory : new HashSet<>(directories)) {
+        jos.putNextEntry(new JarEntry(directory.name));
         jos.closeEntry();
         count++;
       }

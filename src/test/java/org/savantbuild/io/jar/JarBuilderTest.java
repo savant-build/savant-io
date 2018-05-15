@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014-2018, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,20 @@ public class JarBuilderTest extends BaseUnitTest {
     jarFile.close();
   }
 
+  private static void assertJarContainsDirectories(Path file, String... directories) throws IOException {
+    JarFile jarFile = new JarFile(file.toFile());
+    for (String directory : directories) {
+      JarEntry jarEntry = jarFile.getJarEntry(directory);
+      if (jarEntry == null) {
+        fail("JAR [" + file + "] is missing directory [" + directory + "]");
+      }
+
+      assertTrue(jarEntry.isDirectory(), "Jar entry [" + directory + "] is not a directory");
+    }
+
+    jarFile.close();
+  }
+
   private static void assertJarFileEquals(Path jarFile, String entry, Path original) throws IOException {
     try (JarInputStream jis = new JarInputStream(Files.newInputStream(jarFile))) {
       JarEntry jarEntry = jis.getNextJarEntry();
@@ -70,20 +84,6 @@ public class JarBuilderTest extends BaseUnitTest {
     }
   }
 
-  private static void assertJarContainsDirectories(Path file, String... directories) throws IOException {
-    JarFile jarFile = new JarFile(file.toFile());
-    for (String directory : directories) {
-      JarEntry jarEntry = jarFile.getJarEntry(directory);
-      if (jarEntry == null) {
-        fail("JAR [" + file + "] is missing directory [" + directory + "]");
-      }
-
-      assertTrue(jarEntry.isDirectory(), "Jar entry [" + directory + "] is not a directory");
-    }
-
-    jarFile.close();
-  }
-
   @Test
   public void build() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/jars"));
@@ -101,7 +101,7 @@ public class JarBuilderTest extends BaseUnitTest {
     assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
     assertJarContainsDirectories(file, "META-INF/", "test/directory/", "org/", "org/savantbuild/", "org/savantbuild/io/",
         "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
-    assertEquals(count, 33);
+    assertEquals(count, 34);
   }
 
   @Test
@@ -137,6 +137,25 @@ public class JarBuilderTest extends BaseUnitTest {
     assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
     assertJarContainsDirectories(file, "META-INF/", "org/", "org/savantbuild/", "org/savantbuild/io/",
         "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
-    assertEquals(count, 32);
+    assertEquals(count, 33);
+  }
+
+  @Test
+  public void build_existingMETA_INF() throws Exception {
+    FileTools.prune(projectDir.resolve("build/test/jars"));
+
+    Path file = projectDir.resolve("build/test/jars/test.jar");
+    JarBuilder builder = new JarBuilder(file);
+    int count = builder.fileSet(new FileSet(projectDir.resolve("src/main/java")))
+                       .fileSet(new FileSet(projectDir.resolve("src/test/java")))
+                       .fileSet(new FileSet(projectDir.resolve("src/test/resources")))
+                       .build();
+    assertTrue(Files.isReadable(file));
+    assertJarContains(new JarFile(file.toFile()), "org/savantbuild/io/Copier.java", "org/savantbuild/io/CopierTest.java",
+        "org/savantbuild/io/FileSet.java", "org/savantbuild/io/FileTools.java", "META-INF/information.txt");
+    assertJarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
+    assertJarContainsDirectories(file, "META-INF/", "org/", "org/savantbuild/", "org/savantbuild/io/",
+        "org/savantbuild/io/jar/", "org/savantbuild/io/tar/", "org/savantbuild/io/zip/");
+    assertEquals(count, 34);
   }
 }
