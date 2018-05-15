@@ -143,12 +143,17 @@ public class JarBuilderTest extends BaseUnitTest {
   @Test
   public void build_existingMETA_INF() throws Exception {
     FileTools.prune(projectDir.resolve("build/test/jars"));
+    FileTools.prune(projectDir.resolve("build/test/resources/META-INF"));
+
+    // create a META-INF directory with one file.
+    Files.createDirectories(projectDir.resolve("build/test/resources/META-INF"));
+    Files.createFile(projectDir.resolve("build/test/resources/META-INF/information.txt"));
 
     Path file = projectDir.resolve("build/test/jars/test.jar");
     JarBuilder builder = new JarBuilder(file);
     int count = builder.fileSet(new FileSet(projectDir.resolve("src/main/java")))
                        .fileSet(new FileSet(projectDir.resolve("src/test/java")))
-                       .fileSet(new FileSet(projectDir.resolve("src/test/resources")))
+                       .fileSet(new FileSet(projectDir.resolve("build/test/resources")))
                        .build();
     assertTrue(Files.isReadable(file));
     assertJarContains(new JarFile(file.toFile()), "org/savantbuild/io/Copier.java", "org/savantbuild/io/CopierTest.java",
