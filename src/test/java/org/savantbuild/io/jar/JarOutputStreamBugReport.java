@@ -37,6 +37,7 @@ public class JarOutputStreamBugReport {
     // Create a test file to include in the jar.
     Files.deleteIfExists(Paths.get("./foo"));
     Path file = Files.createFile(Paths.get("./foo"));
+    file.toFile().deleteOnExit();
 
     FileTime creationTime = (FileTime) Files.getAttribute(file, "creationTime");
     FileTime lastAccessTime = (FileTime) Files.getAttribute(file, "lastAccessTime");
