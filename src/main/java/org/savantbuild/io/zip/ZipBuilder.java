@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014-2018, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,6 @@ public class ZipBuilder {
         ZipEntry entry = new ZipEntry(fileInfo.relative.toString());
         entry.setLastAccessTime(fileInfo.lastAccessTime);
         entry.setLastModifiedTime(fileInfo.lastModifiedTime);
-        entry.setTime(fileInfo.lastModifiedTime.toMillis());
         entry.setSize(fileInfo.size);
         entry.setUnixMode(fileInfo.toMode());
         zos.putNextEntry(entry);
