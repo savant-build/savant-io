@@ -104,7 +104,6 @@ public class JarBuilder {
         entry.setCreationTime(fileInfo.creationTime);
         entry.setLastAccessTime(fileInfo.lastAccessTime);
         entry.setLastModifiedTime(fileInfo.lastModifiedTime);
-        entry.setTime(fileInfo.lastModifiedTime.toMillis());
         entry.setSize(fileInfo.size);
         jos.putNextEntry(entry);
         Files.copy(fileInfo.origin, jos);
