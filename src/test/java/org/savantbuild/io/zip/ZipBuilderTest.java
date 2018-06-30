@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014-2018, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class ZipBuilderTest extends BaseUnitTest {
     assertZipContainsDirectory(file, "org/savantbuild/io/jar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/tar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/zip/", 0x755);
-    assertEquals(count, 33);
+    assertEquals(count, 34);
   }
 
   @Test
@@ -153,7 +153,7 @@ public class ZipBuilderTest extends BaseUnitTest {
     assertZipContainsDirectory(file, "org/savantbuild/io/jar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/tar/", 0x755);
     assertZipContainsDirectory(file, "org/savantbuild/io/zip/", 0x755);
-    assertEquals(count, 32);
+    assertEquals(count, 33);
   }
 
   @Test

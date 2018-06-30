@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014-2018, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class TarBuilderTest extends BaseUnitTest {
     assertTarContainsDirectory(file, "org/savantbuild/", null, null, null);
     assertTarContainsDirectory(file, "org/savantbuild/io/", null, null, null);
     assertTarContainsDirectory(file, "test/directory/", 0x755, "root", "root");
-    assertEquals(count, 33);
+    assertEquals(count, 34);
   }
 
   @Test
@@ -148,7 +148,7 @@ public class TarBuilderTest extends BaseUnitTest {
     assertTarContainsDirectory(file, "usr/local/main/org/savantbuild/io/", null, null, null);
     assertTarContainsDirectory(file, "usr/local/test/org/savantbuild/io/", null, null, null);
     assertTarContainsDirectory(file, "test/directory/", 0x755, "root", "root");
-    assertEquals(count, 43);
+    assertEquals(count, 44);
   }
 
   @Test
@@ -167,7 +167,7 @@ public class TarBuilderTest extends BaseUnitTest {
     assertTrue(Files.isReadable(file));
     assertTarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
     assertTarFileEquals(file, "org/savantbuild/io/FileSet.java", projectDir.resolve("src/main/java/org/savantbuild/io/FileSet.java"));
-    assertEquals(count, 32);
+    assertEquals(count, 33);
   }
 
   @Test
@@ -202,6 +202,6 @@ public class TarBuilderTest extends BaseUnitTest {
     assertTrue(Files.isReadable(file));
     assertTarFileEquals(file, "org/savantbuild/io/Copier.java", projectDir.resolve("src/main/java/org/savantbuild/io/Copier.java"));
     assertTarFileEquals(file, "org/savantbuild/io/FileSet.java", projectDir.resolve("src/main/java/org/savantbuild/io/FileSet.java"));
-    assertEquals(count, 32);
+    assertEquals(count, 33);
   }
 }

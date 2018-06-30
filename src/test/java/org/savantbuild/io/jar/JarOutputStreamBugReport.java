@@ -79,7 +79,7 @@ public class JarOutputStreamBugReport {
       entry.setTime(lastModifiedTime.toMillis());
     });
 
-    // 5. Fails
+    // 5. Fails on OpenJDK 10 and 11, passes on Oracle 1.8
     runTestCase(jarFile, file, entry -> {
       entry.setCreationTime(creationTime);
       entry.setLastAccessTime(lastAccessTime);

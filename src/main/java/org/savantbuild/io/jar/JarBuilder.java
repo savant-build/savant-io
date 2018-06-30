@@ -116,7 +116,7 @@ public class JarBuilder {
     return count;
   }
 
-  public JarBuilder directory(Directory directory) throws IOException {
+  public JarBuilder directory(Directory directory) {
     directories.add(directory);
     return this;
   }
