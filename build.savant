@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-project(group: "org.savantbuild", name: "savant-io", version: "1.0.3", licenses: ["ApacheV2_0"]) {
+project(group: "org.savantbuild", name: "savant-io", version: "2.0.0-RC.1", licenses: ["ApacheV2_0"]) {
   workflow {
     fetch {
       cache()
