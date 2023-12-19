@@ -63,7 +63,7 @@ public class Copier {
           // into memory, filter them, then write it out
           String contents = new String(Files.readAllBytes(fileInfo.origin), "UTF-8");
           for (Filter filter : filters) {
-            contents = contents.replace(filter.token, filter.value);
+            contents = contents.replaceAll(filter.token, filter.value);
           }
           Files.write(target, contents.getBytes("UTF-8"));
         }
