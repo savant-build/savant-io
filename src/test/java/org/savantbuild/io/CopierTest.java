@@ -56,6 +56,7 @@ public class CopierTest extends BaseUnitTest {
     copier.fileSet(new FileSet(BaseUnitTest.projectDir.resolve("src/test/java"), asList(Pattern.compile(".*/io/.*")), asList(Pattern.compile(".*FileSet.*"))))
           .filter("%TOKEN1%", "token1")
           .filter("%TOKEN4%", "token4")
+          .filter("\n.*\\@Token5\\(\\w*\\)\n", " and ")
           .copy();
 
     assertTrue(Files.isRegularFile(toDir.resolve("org/savantbuild/io/CopierTest.java")));
@@ -64,7 +65,8 @@ public class CopierTest extends BaseUnitTest {
 
     assertEquals(new String(Files.readAllBytes(toDir.resolve("org/savantbuild/io/TestFilterFile.txt"))),
         "This file contains token1 and %TOKEN2%\n" +
-            "It should be replaced with %TOKEN3% and token4");
+            "It should be replaced with %TOKEN3% and token4\n" +
+            "Also the next line and this line and this one should be one line");
   }
 
   @Test
